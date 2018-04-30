@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "Hello World"
-subtitle:   "分享你的知识和观点"
+subtitle:   "java in action"
 date:       2018-04-30
 author:     "QuTianyu"
 header-img: "img/post-build-a-blog.jpg"
