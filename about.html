@@ -1,86 +1,86 @@
 ---
 layout: page
 title: "About"
-description: "Bebop.C"
+description: "QuTianyu"
 header-img: "img/about-bg.jpg"
 ---
 
 <!-- Language Selector -->
-<select onchange= "onLanChange(this.options[this.options.selectedIndex].value)">
-    <option value="0" selected> 中文 Chinese </option>
-    <option value="1"> 英文 English </option>
-</select>
+<!-- <select onchange= "onLanChange(this.options[this.options.selectedIndex].value)"> -->
+    <!-- <option value="0" selected> 中文 Chinese </option> -->
+    <!-- <option value="1"> 英文 English </option> -->
+<!-- </select> -->
 
 <!-- Chinese Version -->
 <div class="zh post-container">
 
     <!--copied from markdown -->
-    <blockquote>
-        唯有恐惧，方能勇敢。
-    </blockquote>
-    上帝给了你这些天赋，如果你不用，他就会把它收回。
+    <!-- <blockquote> -->
+        <!-- 唯有恐惧，方能勇敢。 -->
+    <!-- </blockquote> -->
+    这里是一个年轻的码农的技术博客。
 
-    <p style="text-align:right;">
-        —— <a href="http://www.amazon.com/Clapton-The-Autobiography-Eric/dp/076792536X">埃里克·克莱普顿 </a>
-    </p>
+    <!-- <p style="text-align:right;"> -->
+        <!-- —— <a href="http://www.amazon.com/Clapton-The-Autobiography-Eric/dp/076792536X">埃里克·克莱普顿 </a> -->
+    <!-- </p> -->
 
 </div>
 
 <!-- English Version -->
-<div class="en post-container">
-    <blockquote>
-        Math & music.
-    </blockquote>
+<!-- <div class="en post-container"> -->
+    <!-- <blockquote> -->
+        <!-- Math & music. -->
+    <!-- </blockquote> -->
 
-    <p>
-    God has given you this gift, and if you don't use it he will take it away.
-    </p>
+    <!-- <p> -->
+    <!-- 这里是一个年轻的码农的技术博客。 -->
+    <!-- </p> -->
 
-    <p style="text-align:right;">
-    -- Eric Claptoon
-    </p>
+    <!-- <p style="text-align:right;"> -->
+    <!-- -- Eric Claptoon -->
+    <!-- </p> -->
 
-</div>
+<!-- </div> -->
 
 <!-- Handle Language Change -->
-<script type="text/javascript">
-    // get nodes
-    var $zh = document.querySelector(".zh");
-    var $en = document.querySelector(".en");
-    var $select = document.querySelector("select");
+<!-- <script type="text/javascript"> -->
+    <!-- // get nodes -->
+    <!-- var $zh = document.querySelector(".zh"); -->
+    <!-- var $en = document.querySelector(".en"); -->
+    <!-- var $select = document.querySelector("select"); -->
 
-    // bind hashchange event
-    window.addEventListener('hashchange', _render);
+    <!-- // bind hashchange event -->
+    <!-- window.addEventListener('hashchange', _render); -->
 
-    // handle render
-    function _render(){
-        var _hash = window.location.hash;
-        // en
-        if(_hash == "#en"){
-            $select.selectedIndex = 1;
-            $en.style.display = "block";
-            $zh.style.display = "none";
-        // zh by default
-        }else{
-            // not trigger onChange, otherwise cause a loop call.
-            $select.selectedIndex = 0;
-            $zh.style.display = "block";
-            $en.style.display = "none";
-        }
-    }
+    <!-- // handle render -->
+    <!-- function _render(){ -->
+        <!-- var _hash = window.location.hash; -->
+        <!-- // en -->
+        <!-- if(_hash == "#en"){ -->
+            <!-- $select.selectedIndex = 1; -->
+            <!-- $en.style.display = "block"; -->
+            <!-- $zh.style.display = "none"; -->
+        <!-- // zh by default -->
+        <!-- }else{ -->
+            <!-- // not trigger onChange, otherwise cause a loop call. -->
+            <!-- $select.selectedIndex = 0; -->
+            <!-- $zh.style.display = "block"; -->
+            <!-- $en.style.display = "none"; -->
+        <!-- } -->
+    <!-- } -->
 
-    // handle select change
-    function onLanChange(index){
-        if(index == 0){
-            window.location.hash = "#zh"
-        }else{
-            window.location.hash = "#en"
-        }
-    }
+    <!-- // handle select change -->
+    <!-- function onLanChange(index){ -->
+        <!-- if(index == 0){ -->
+            <!-- window.location.hash = "#zh" -->
+        <!-- }else{ -->
+            <!-- window.location.hash = "#en" -->
+        <!-- } -->
+    <!-- } -->
 
-    // init
-    _render();
-</script>
+    <!-- // init -->
+    <!-- _render(); -->
+<!-- </script> -->
 
 
 
