@@ -1,7 +1,7 @@
 ---
 layout:     post
-title:      "数据结构——Stack的实现"
-subtitle:   "java in action"
+title:      "Stack的实现"
+subtitle:   "java数据结构学习"
 date:       2018-05-01
 author:     "QuTianyu"
 header-img: "img/post-build-a-blog.jpg"
