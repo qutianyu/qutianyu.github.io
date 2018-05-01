@@ -1,0 +1,99 @@
+---
+layout:     post
+title:      "数据结构——栈（stack）的基本实现"
+subtitle:   "java in action"
+date:       2018-05-01
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+    - 数据结构
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+# 一、前言
+
+最近正在看《算法 第四版》，很经典的一本学习java数据结构的书籍，但是书中的代码很多用了自己封装的工具包来实现，看的时候有些脑壳疼。所以决定慢慢用自己的理解把书中比较重点的代码敲一遍。代码和书中有较大区别，除了参考书之外还要结合网络其它教程。
+
+# 二、栈的基本认识
+
+1. 栈本身是一种特殊的线性表
+2. 栈的特殊点在于，元素先进后出
+3. Windows和浏览器的前进/后退按钮可以想象成一个栈
+
+# 三、代码
+
+```java
+public class stackNew<T>{
+
+    private T[] objects; //用数组实现一个stack demo，用于存放元素
+    private Integer length;  //数组实际长度
+    private Integer size;  //数组最大长度
+	
+	//构造方法，传入一个既定的数组
+    stackNew(T[] objects){ 
+        this.objects = objects;
+        length = objects.length;
+        size = objects.length;
+    }
+	
+	//根据size改变数组的长度
+    private void resize(Integer size){
+        T[] obs = (T[])new Object[size]; //创建一个新数组
+        for(int i = 0 ; i < length ; i ++){ //将旧数组的元素存入新数组
+            obs[i] = objects[i];
+        }
+        this.size = size; //替换size
+        objects = obs; //替换objects
+    }
+	
+	//添加元素的方法
+    public void push(T t){
+        if(length == size) //元素个数达到预定最大值的情况
+        	resize(2 * size); //调用改长方法，增加数组长度
+        
+        objects[length] = t; 
+        length ++; 
+    }
+	
+	//获取元素的方法
+    public Object pop(){
+        if(length == 0) //元素为空的情况
+            return null;
+
+        length --;
+        Object o = objects[length]; //获取元素
+        objects[length] = null; //删除数组中的元素
+
+        if(length <= size/4) //元素个数小于预定最大值的四分之一的情况
+            resize(size/2); //调用改长方法，缩小数组长度
+
+        return o; 
+    }
+	
+	//打印所有元素
+    public void getObjects(){
+        for(Object o : objects){
+            System.out.print(o+" ");
+        }
+        System.out.println();
+    }
+	
+	//打印实际的元素个数
+    public void getLength(){
+        System.out.println(length);
+    }
+
+	//打印预定的最大元素个数
+    public void getSize(){
+        System.out.println(size);
+    }
+
+}
+
+```
+先来个简单的实现，其他更多的实现方式和功能方法之后补充。
