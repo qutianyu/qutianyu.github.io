@@ -1,6 +1,6 @@
 ---
 layout:     post
-title:      "Stack的实现"
+title:      "栈的基本实现"
 subtitle:   "java数据结构学习"
 date:       2018-05-01
 author:     "QuTianyu"
@@ -18,7 +18,7 @@ tags:
 # 一、前言
 
 最近正在看《算法 第四版》，很经典的一本学习java数据结构的书籍，但是书中的代码很多用了自己封装的工具包来实现，看的时候有些脑壳疼。所以决定慢慢用自己的理解把书中比较重点的代码敲一遍。代码和书中有较大区别，除了参考书之外还要结合网络其它教程。
-在JDK1.8的util包中，栈Stack的实现继承了Vector，而Vector本质上是一个用变长数组实现的List。本文中为了代码更加简洁，会直接使用变长数组来实现Stack的功能demo。
+在JDK中，Stack的实现继承了Vector，而Vector本质上是一个用变长数组实现的List，已经很少被用到了。本文中简化了代码，会直接使用变长数组来实现Stack的功能demo。
 
 # 二、栈的基本认识
 
@@ -41,9 +41,19 @@ class stackNew<T>{
         length = objects.length;
         size = objects.length;
     }
+    
+    /*构造方法*/
+    stackNew(){
+    	objects = (T[])new Object[2];
+    	length = 0;
+    	size = 2;
+    }
 
-    /*根据size改变数组的长度，模拟jdk中vector的功能*/
+    /*实现变长数组*/
     private void resize(Integer size){
+    	if(size <= 1)
+    		size = 1;
+    	
         T[] obs = (T[])new Object[size]; //创建一个新数组
         for(int i = 0 ; i < length ; i ++){ //将旧数组的元素存入新数组
             obs[i] = objects[i];
@@ -61,37 +71,45 @@ class stackNew<T>{
         length ++;
     }
 
-    /*获取元素的方法*/
-    public Object pop(){
-        if(length == 0) //元素为空的情况
+    /*获取元素，并删除元素*/
+    public T pop(){
+    	if(isEmpty()) //元素为空的情况
             return null;
-
-        length --;
-        Object o = objects[length]; //获取元素
+    	
+    	T t = objects[length]; //获取元素
+    	length --;
         objects[length] = null; //删除数组中的元素
 
         if(length <= size/4) //元素个数小于预定最大值的四分之一的情况
             resize(size/2); //调用改长方法，缩小数组长度
-
-        return o;
+        
+        return t;
+    	
+    }
+    
+    /*获取元素，但不删除*/
+    public T peek(){
+        if(isEmpty()) //元素为空的情况
+            return null;
+        
+        T t = objects[length]; //获取元素
+        return t;
+    }
+    
+    /*判断是否为空*/
+    public Boolean isEmpty() {
+    	if(length == 0)	//元素为空的情况
+            return true;
+    	else			//不为空
+    		return false;
     }
 
     /*打印所有元素*/
     public void getObjects(){
-        for(Object o : objects){
-            System.out.print(o+" ");
+        for(T t : objects){
+            System.out.print(t+" ");
         }
         System.out.println();
-    }
-
-    /*打印实际的元素个数*/
-    public void getLength(){
-        System.out.println(length);
-    }
-
-    /*打印预定的最大元素个数*/
-    public void getSize(){
-        System.out.println(size);
     }
 
 }
