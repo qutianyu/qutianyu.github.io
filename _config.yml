@@ -1,9 +1,9 @@
 # Site settings
-title: Anything In Action
+title: QuTianyu's Blog
 SEOTitle: QuTianyu的博客 | QuTianyu's Blog
 header-img: img/home-bg.jpg
 email: qutianyu_ok@outlook.com
-description: "Just  a  Java  coder"
+description: "Just  a  Coder"
 keyword: "java,数据结构"
 url: ""              # your host, for absolute URL
 baseurl: ""                             # for example, '/blog' if your blog hosted on 'host/blog'
