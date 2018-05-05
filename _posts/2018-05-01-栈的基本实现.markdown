@@ -1,7 +1,7 @@
 ---
 layout:     post
 title:      "栈的基本实现"
-subtitle:   "java数据结构学习"
+subtitle:   "Java数据结构学习"
 date:       2018-05-01
 author:     "QuTianyu"
 header-img: "img/post-build-a-blog.jpg"
@@ -17,33 +17,26 @@ tags:
 
 # 一、前言
 
-最近正在看《算法 第四版》，很经典的一本学习java数据结构的书籍，但是书中的代码很多用了自己封装的工具包来实现，看的时候有些脑壳疼。所以决定慢慢用自己的理解把书中比较重点的代码敲一遍。代码和书中有较大区别，除了参考书之外还要结合网络其它教程。
-在JDK中，Stack的实现继承了Vector，而Vector本质上是一个用变长数组实现的List，已经很少被用到了。本文中简化了代码，会直接使用变长数组来实现Stack的功能demo。
+最近正在看《算法 第四版》，很经典的一本学习java数据结构的书籍，但是书中的代码很多用了自己封装的工具包来实现，看的时候有些脑壳疼。所以决定慢慢用自己的理解把书中比较重点的代码敲一遍。代码和书中有较大区别，基础的数据类型会更多的参考JDK的实现。
+在java.util包中，Stack的实现继承了Vector，而Vector本质上是一个用变长数组实现的List，已经很少被用到了。本文中简化了代码，会直接使用变长数组来实现Stack的功能demo。
 
 # 二、栈的基本认识
 
-1. 栈本身是一种特殊的线性表
-2. 栈的特殊点在于，元素先进后出
-3. Windows和浏览器的前进/后退按钮可以认为是一个栈
+1. Stack本身是一种特殊的线性表
+2. Stack的特殊点在于，元素先进后出
+3. Vector和Stack线程安全
 
 # 三、代码
 
 ```java
-class stackNew<T>{
+class Stack<T>{
 
     private T[] objects; //存放元素的数组
     private Integer length;  //数组实际长度
     private Integer size;  //数组最大长度
 
-    /*构造方法，传入一个既定的数组*/
-    stackNew(T[] objects){
-        this.objects = objects;
-        length = objects.length;
-        size = objects.length;
-    }
-    
     /*构造方法*/
-    stackNew(){
+    Stack(){
     	objects = (T[])new Object[2];
     	length = 0;
     	size = 2;
@@ -63,37 +56,56 @@ class stackNew<T>{
     }
 
     /*添加元素的方法*/
-    public void push(T t){
+    public synchronized T push(T t){
         if(length == size) //元素个数达到预定最大值的情况
             resize(2 * size); //调用改长方法，增加数组长度
-
         objects[length] = t;
         length ++;
+        return t;
     }
 
-    /*获取元素，并删除元素*/
-    public T pop(){
-    	if(isEmpty()) //元素为空的情况
-            return null;
+    /*获取元素，并删除该元素*/
+    public synchronized T pop(){
     	
-    	T t = objects[length]; //获取元素
-    	length --;
-        objects[length] = null; //删除数组中的元素
+    	T t = peek(); //获取元素
+    	
+    	if(!isEmpty()) { //元素不为空的情况
+    		length --;
+            objects[length] = null; //删除数组中的元素
 
-        if(length <= size/4) //元素个数小于预定最大值的四分之一的情况
-            resize(size/2); //调用改长方法，缩小数组长度
-        
+            if(length <= size/4) //元素个数小于预定最大值的四分之一的情况
+                resize(size/2); //调用改长方法，缩小数组长度
+    	}
+
         return t;
-    	
     }
     
     /*获取元素，但不删除*/
-    public T peek(){
-        if(isEmpty()) //元素为空的情况
-            return null;
+    public synchronized T peek(){
+        if(isEmpty()) 
+        	throw new NoSuchElementException(); //如果数组为空则抛出一个异常
         
-        T t = objects[length]; //获取元素
-        return t;
+        return objects[length - 1];
+    }
+    
+    /*查找元素功能，返回index*/
+    public synchronized Integer search(T t) {
+
+    	if(t == null) { //参数为null的情况
+    		for(int i = 0;i < length;i ++) {
+    			if(objects[i] == null) {
+    				return i; 
+    			}
+    		}
+    	}else { //参数不为null的情况
+    		for(int i = 0;i < length;i ++) {
+    			if(objects[i].equals(t)) {
+    				return i;
+    			}
+    		}
+    	}
+    	
+    	return -1; //没有该元素
     }
     
     /*判断是否为空*/
@@ -104,15 +116,6 @@ class stackNew<T>{
     		return false;
     }
 
-    /*打印所有元素*/
-    public void getObjects(){
-        for(T t : objects){
-            System.out.print(t+" ");
-        }
-        System.out.println();
-    }
-
 }
 
 ```
-先来个简单的实现，其他更多的实现方式和功能方法之后补充。

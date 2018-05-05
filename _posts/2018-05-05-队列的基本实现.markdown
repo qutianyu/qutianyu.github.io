@@ -1,0 +1,111 @@
+---
+layout:     post
+title:      "队列的基本实现"
+subtitle:   "Java数据结构学习"
+date:       2018-05-05
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+    - 数据结构
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+# 一、前言
+
+在java.util包中，Queue是一个的继承了Collection接口的接口，而不是一个实体类。介于jdk中Queue没有纯粹的实现类，本文会参照Stack用一个边长数组的思路来实现Queue的demo。
+
+# 二、栈的基本认识
+
+1. Queue本身是一种特殊的线性表
+2. Queue的特殊点在于，元素先进先出
+3. jdk中的PriorityQueue、LinkedList等实体类都直接或间接实现了Queue接口
+
+# 三、代码
+
+```java
+class Queue<T>{
+	
+	private T[] objects; //存放元素的数组
+	private Integer length;  //数组实际长度
+    private Integer size;  //数组最大长度
+	
+	/*构造方法*/
+	Queue(){
+    	objects = (T[])new Object[2];
+    	length = 0;
+    	size = 2;
+    }
+	
+	/*实现变长数组*/
+    private void resize(Integer size){
+    	if(size <= 1)
+    		size = 1;
+    	
+        T[] obs = (T[])new Object[size]; //创建一个新数组
+        for(int i = 0 ; i < length ; i ++){ //将旧数组的元素存入新数组
+            obs[i] = objects[i];
+        }
+        this.size = size; //替换size
+        objects = obs; //替换objects
+    }
+    
+    /*删除第一个元素*/
+    private void deleteOne() {
+    	T[] obs = (T[])new Object[this.size];
+    	for(int i = 0 ; i < length ; i ++) {
+    		obs[i] = objects[i+1];
+    	}
+    	length --;
+    	objects = obs;
+    }
+	
+	/*添加元素*/
+	public Boolean offer(T t) {
+		if(length == size) //元素个数达到预定最大值的情况
+            resize(2 * size); //调用改长方法，增加数组长度
+        objects[length] = t;
+        length ++;
+        return true;
+	}
+	
+	/*返回第一个元素，并删除该元素*/
+	public T poll() {
+		T t = element(); //获取第一个元素
+		
+		if(!isEmpty()) { //删除第一个元素
+			deleteOne();
+		}
+		return t;
+	}
+	
+	/*返回第一个元素*/
+	public T element() {
+		if(isEmpty())
+			throw new NoSuchElementException(); //如果数组为空则抛出一个异常
+		
+		return objects[0]; //返回第一个元素
+	}
+	
+	/*返回第一个元素*/
+	public T peek() {
+		if(isEmpty())
+			return null; //如果数组为空则返回null
+	
+		return objects[0]; //返回第一个元素
+	}
+	
+	/*判断是否为空*/
+    public Boolean isEmpty() {
+    	if(length == 0)	//元素为空的情况
+            return true;
+    	else			//不为空
+    		return false;
+    }
+}
+
+```
