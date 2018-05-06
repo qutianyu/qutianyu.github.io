@@ -1,0 +1,94 @@
+---
+layout:     post
+title:      "两个栈实现一个队列"
+subtitle:   "Java数据结构学习"
+date:       2018-05-06
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+    - 数据结构
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+# 一、前言
+
+听说该题是一道经典的C++数据结构题，曾经在面试的时候也被问到过，当时一脸懵逼，直接回答了“不知道”。在了解了Stack和Queue之后拿出来解析一下这道题。
+
+# 二、基本认识
+
+在两个Stack中，一个作为存储元素的主栈使用，另一个副栈用作取出数据时候的临时存储栈。Queue进行元素取用的时候把主栈的元素倒入副栈中，这时候副栈取出的第一个元素与Queue想要取出的第一个元素相同。取完之后再把元素倒回到主栈中即可。
+
+# 三、代码
+
+```java
+class Queue<T>{
+	private Stack<T> mainStack; //主栈
+	private Stack<T> secondStack; //副栈
+	
+	/*构造方法*/
+	Queue(){
+    	mainStack = new Stack<T>();
+    	secondStack = new Stack<T>();
+    }
+	
+	/*将两个stack倒置*/
+	private void reverseStack(Stack<T> dataStack,Stack<T> emptyStack) {
+		T t;
+		while(!dataStack.isEmpty()) { //将第一个栈的元素倒入到第二个栈中
+			t = dataStack.pop();
+			emptyStack.push(t);
+		}
+	}
+	
+	/*添加元素*/
+	public Boolean offer(T t) {
+        mainStack.push(t); //用主栈存放元素
+        return true;
+	}
+	
+	/*返回第一个元素，并删除该元素*/
+	public T poll() {
+		if(isEmpty())
+			throw new NoSuchElementException(); //如果数据为空则抛出一个异常
+		
+		reverseStack(mainStack,secondStack); //把主栈的元素倒入副栈
+		T t = secondStack.pop(); //取出元素并删除
+		reverseStack(secondStack,mainStack); //把副栈的元素倒入主栈
+		return t;
+	}
+	
+	/*返回第一个元素*/
+	public T element() {
+		if(isEmpty())
+			throw new NoSuchElementException(); //如果数据为空则抛出一个异常
+		
+		reverseStack(mainStack,secondStack); //把主栈的元素倒入副栈
+		T t = secondStack.peek(); //取出元素但不删除
+		reverseStack(secondStack,mainStack); //把副栈的元素倒入主栈
+		return t;
+	}
+	
+	/*返回第一个元素*/
+	public T peek() {
+		if(isEmpty())
+			return null; //如果数据为空则抛出一个异常
+		
+		return element();
+	}
+	
+	/*判断是否为空*/
+    public Boolean isEmpty() {
+    	if(mainStack.size() == 0)	//元素为空的情况
+            return true;
+    	else			//元素不为空
+    		return false;
+    }
+	
+}
+
+```
