@@ -1,0 +1,183 @@
+---
+layout:     post
+title:      "链表的基本实现"
+subtitle:   "Java数据结构学习"
+date:       2018-05-12
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+    - 数据结构
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+# 一、前言
+
+链表是较为常用的一种数据结构。在C/C++中，链表的实现依赖指针。Java中则采用了对象的方式来实现。链表有很多分支，比如双链表、单链表、循环链表等，本文中参考java.util包中的LinkedList类来实现一个基础链表的demo。
+
+# 二、基本认识
+
+链表适合增删操作，不适合查询操作。
+
+# 三、代码
+
+```java
+class LinkedList<T>{
+	private Node<T> firstNode; //第一个节点
+	private Node<T> lastNode; //最后一个节点
+	private Integer length; //链表长度
+	
+	private class Node<T>{
+		private Node<T> frontNode; //该节点的前一个节点
+		private Node<T> behindNode; //该节点的下一个节点
+		private T data; //储存的数据
+		
+		/**
+		 * 构造方法
+		 */
+		Node(Node<T> frontNode,T data,Node<T> behindNode){
+			this.frontNode = frontNode;
+			this.data = data;
+			this.behindNode = behindNode;
+		}
+	}
+	
+	/**
+	 * 构造方法
+	 */
+	LinkedList(){
+		firstNode = null;
+		lastNode = null;
+		length = 0;
+	}
+	
+	/**
+	 * 构造方法，直接载入一个集合
+	 */
+	LinkedList(Collection<T> c){
+		this(); //调用原始构造方法
+		addAll(c);
+	}
+	
+	/**
+	 * 内部方法，把数据加入到链表的最后端
+	 */
+	private void addInLast(T t) {
+		Node<T> oldLast = lastNode;
+		Node<T> newLast = new Node<T>(oldLast,t,null);
+		lastNode = newLast;
+		if(firstNode == null) //没有节点的情况
+			firstNode = newLast;
+		else //有节点的情况
+			oldLast.behindNode = lastNode;
+		
+		length ++;
+	}
+	
+	/**
+	 * 内部方法，检查index是否合规
+	 */
+	private void checkIndex(Integer index) {
+		if(index < 0 || index >= length || length == 0) //如果要查询的数不符合规范，或者列表为空，则返回null
+			throw new NoSuchElementException();
+	}
+	
+	/**
+	 * 内部方法，通过index获取node
+	 */
+	private Node<T> getNodeByIndex(Integer index) {
+		Node<T> thisNode = firstNode;
+		Node<T> nextNode = thisNode.behindNode;
+		for(int i = 1 ; i <= index ; i ++) { //循环获取到指定的节点
+			thisNode = nextNode;
+			nextNode = thisNode.behindNode;
+		}
+		return thisNode;
+	}
+	
+	/**
+	 * 添加数据
+	 */
+	public void add(T t) {
+		addInLast(t);
+	}
+	
+	/**
+	 * 直接载入一个集合
+	 */
+	public void addAll(Collection<T> c) {
+		T[] ts = (T[])c.toArray();
+		for(T t : ts) {
+			add(t);
+		}
+	}
+	
+	/**
+	 * 根据index查询某个节点的数据
+	 */
+	public T findData(Integer index) {
+		//注意，按照一般习惯，index从0开始计算，length从1开始
+		checkIndex(index);
+		if(index == 0) //如果要查询第一个数据，则返回firstNode的数据
+			return firstNode.data;
+		
+		Node<T> thisNode = getNodeByIndex(index); //获取要查询的节点
+		return thisNode.data;
+	}
+	
+	/**
+	 * 以数组方式返回所有数据
+	 */
+	public Object[] findAllData() {
+		if(length == 0) //链表为空的情况
+			return null;
+		if(length == 1) { //length为1的情况下，直接返回firstNode的数据
+			Object[] t = new Object[1];
+			t[0] = firstNode.data;
+			return t;
+		}
+			
+		Object[] t = new Object[length];
+		Node<T> thisNode = firstNode;
+		Node<T> nextNode = thisNode.behindNode;
+		for(int i = 0 ; i < length ; i ++) { //循环载入数据
+			t[i] = thisNode.data;
+			thisNode = nextNode;
+			if(thisNode != null)
+				nextNode = thisNode.behindNode;
+		}
+
+		return t;
+	}
+	
+	/**
+	 * 根据index删除某个节点的数据
+	 */
+	public T deleteData(Integer index) {
+		checkIndex(index);
+		if(index == 0) { //如果要查询第一个数据，则返回firstNode的数据
+			T data = firstNode.data;
+			length --;
+			if(length == 1)
+				firstNode = null;
+			else {
+				firstNode = firstNode.behindNode;//删除firstNode
+				firstNode.frontNode = null;
+			}	
+			return data;
+		}
+		
+		Node<T> thisNode = getNodeByIndex(index); //获取要查询的节点
+		
+		T data = thisNode.data; //提取数据
+		Node<T> front = thisNode.frontNode; //获取该节点的前一个节点
+		front.behindNode = thisNode.behindNode; //关联该节点的前后两个节点，事实上就是把该节点剔除出链表
+		length --;
+		return data;
+	}	
+}
+```
