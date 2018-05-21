@@ -17,7 +17,7 @@ tags:
 
 
 这几天研究了一下分布式框架，具体创建项目和项目的结构目录就不提了，资料很多，千篇一律，重点记录一下自己在spring整合dubbo和zookeeper中趟过的坑。
-版本上，ide使用idea2018，spring使用的是5.0.7，dubbo使用2.6.1，zookeeper使用的是3.5.3。这些都是截止到2018年5月18日的最新版本，经过测试，spring换成4.x，dubbo换成2.5.x，zookeeper换成3.4.x也都没有问题。
+版本上，ide使用idea2018.1，spring使用的是5.0.7，dubbo使用2.6.1，zookeeper使用的是3.5.3。这些都是截止到2018年5月18日的最新版本，经过测试，spring换成4.x，dubbo换成2.5.x，zookeeper换成3.4.x也都没有问题。
 
 ## 母项目
 首先在pom里添加spring全家桶和dubbo、zookeeper的依赖（真实开发里可能会用到更多jar包的依赖，这里只是demo）。
@@ -25,7 +25,7 @@ tags:
 <properties>
 	<spring.version>5.0.7.BUILD-SNAPSHOT</spring.version>
 	<dubbo.version>2.6.1</dubbo.version>
-	<zookeeper.version>3.5.3-Beta</zookeeper.version>
+	<zookeeper.version>3.4.7</zookeeper.version>
 </properties>
 
 <dependencies>
@@ -95,7 +95,7 @@ tags:
     </dependency>
 </dependcies>
 ```
-**在引入dubbo的时候务必要排除掉dubbo里spring的依赖，因为dubbo 2.x本身依赖的是一个2.x 版本的spring，会和项目里的高版本spring冲突。**
+**在引入dubbo的时候务必要排除掉dubbo里spring的依赖，因为dubbo 2.x本身依赖的是一个2.x 版本的spring，会和项目里的高版本spring冲突。另外，zookeeper的jar包不能引3.53-Beta，会出兼容性问题**
 
 ##消费方（Controller）
 在web.xml里添加spring配置文件applicationContext.xml，这个配置文件在src/main/resource文件夹下。
