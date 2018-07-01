@@ -1,0 +1,195 @@
+---
+layout:     post
+title:      "Java中的反射机制"
+subtitle:   "Java特性学习"
+date:       2018-07-01
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+
+# 一、基本认识
+
+在Java中的反射机制是指在运行状态中，对于任意一个类都能够知道这个类所有的属性和方法；并且对于任意一个对象，都能够调用它的任意一个方法；这种动态获取信息以及动态调用对象方法的功能成为Java语言的反射机制。
+Java的反射主要用在框架的搭建等比较重视泛用性，且较为底层的基建项目中，是多数语言中都存在的高级语言特性。
+Jdk对反射机制做了较好的封装，学习反射对于程序员来说主要是熟悉api的调用。
+
+# 三、代码
+
+```java
+package project.learning;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+public class ReflectLearning {
+
+    public static void main(String[] args){
+
+        /**
+         * 1.获取class的方法（由类获取Class）
+         */
+        Class<?> reflectCls = ReflectObj.class;
+        System.out.println("Demo Number 1: "+ reflectCls.toString()); //输出 project.learning.ReflectObj
+
+
+        /**
+         * 2.获取class的另一个方法（由类路径获取Class）
+         * 需要捕捉ClassNotFoundException
+         */
+        try{
+            Class<?> reflectCls_2 = Class.forName("project.learning.ReflectObj");
+            System.out.println("Demo Number 2: "+ reflectCls_2.toString()); //输出 project.learning.ReflectObj
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+         * 3.利用newInstance获取实体类
+         * newInstance方法是调用类中的默认无参构造器来构造实体类的，
+         * 如果默认无参构造器为private修饰或者不存在则会报错，
+         * newInstance方法返回一个Object对象，需要转换类型
+         */
+        ReflectObj reflectObj = null;
+        try{
+            reflectObj = (ReflectObj)reflectCls.newInstance();
+            System.out.println("Demo Number 3: "+ reflectObj.getObjStr()); //输出 default String
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+         * 4.判断类上是否存在注解
+         */
+        Boolean isAnno = reflectCls.isAnnotation();
+        System.out.println("Demo Number 4: "+ isAnno); //输出 false
+
+
+        /**
+         * 5.获取类中的所有方法
+         * 构造方法不算在内
+         * private修饰的方法也可以获取到
+         */
+        Method[] methods = reflectCls.getDeclaredMethods();
+        System.out.println("Demo Number 5: "+ methods[3].toString());
+        //输出 public void project.learning.ReflectObj.setObjInt(java.lang.Integer)
+
+
+        /**
+         * 6.获取某个特定的方法并调用
+         * setAccessible(true) 可以取消访问限制，即可以访问private修饰的方法
+         */
+        try {
+            Method method = reflectCls.getMethod("setObjInt", Integer.class);
+            method.setAccessible(true);
+            method.invoke(reflectObj,100);
+            System.out.println("Demo Number 6: "+ reflectObj.getObjInt()); //输出 100
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+         * 7.获取类中的所有成员变量
+         * private修饰的变量也可以获取到
+         */
+        Field[] fields = reflectCls.getDeclaredFields();
+        System.out.println("Demo Number 7: "+ fields[0].toString()); //输出 java.lang.Integer project.learning.ReflectObj.objInt
+
+
+        /**
+         * 8.获取某个特定的成员变量并赋值
+         * setAccessible(true) 可以取消访问限制，即可以访问private修饰的变量
+         */
+        try {
+            Field field = reflectCls.getDeclaredField("objStr");
+            field.setAccessible(true);
+            field.set(reflectObj,"testInDemo8");
+            System.out.println("Demo Number 8: "+ reflectObj.getObjStr());
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+        /**
+         * 9.获取类中的所有构造方法
+         */
+        Constructor[] constructors = reflectCls.getDeclaredConstructors();
+        System.out.println("Demo Number 9: "+ constructors[1].toString());
+        //输出 public project.learning.ReflectObj(java.lang.String,java.lang.Integer)
+
+
+        /**
+         * 10.用指定的构造方法获取实体类
+         */
+        try {
+            Constructor constructor = reflectCls.getConstructor(String.class,Integer.class);
+            ReflectObj reflectObj_2 = (ReflectObj)constructor.newInstance("testString",100);
+            System.out.println("Demo Number 10: "+ reflectObj_2.getObjInt()); //输出 100
+            System.out.println("Demo Number 10: "+ reflectObj_2.getObjStr()); //输出 testString
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+}
+
+class ReflectObj{
+
+    private Integer objInt;
+    private String objStr;
+
+    public ReflectObj(){
+        this.objStr = "default String";
+        this.objInt = 0;
+    }
+
+    public ReflectObj(String objStr,Integer objInt){
+        this.objInt = objInt;
+        this.objStr = objStr;
+    }
+
+    public Integer getObjInt() {
+        return objInt;
+    }
+
+    public void setObjInt(Integer objInt) {
+        this.objInt = objInt;
+    }
+
+    public String getObjStr() {
+        return objStr;
+    }
+
+    public void setObjStr(String objStr) {
+        this.objStr = objStr;
+    }
+}
+```
