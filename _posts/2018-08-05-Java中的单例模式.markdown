@@ -1,0 +1,163 @@
+---
+layout:     post
+title:      "Java中的单例模式"
+subtitle:   "Java设计模式学习"
+date:       2018-08-05
+author:     "QuTianyu"
+header-img: "img/post-build-a-blog.jpg"
+tags:
+    - java
+    - 设计模式
+---
+
+
+**版权声明：欢迎分享，转载请注明出处。**
+
+---
+
+
+# 一、基本认识
+
+单例模式是一种广泛用于java框架搭建的模式，最直接的好处就是能减少内存的消耗。
+
+# 三、代码
+
+```java
+package blog.design;
+
+/**
+ * 单例模式
+ * - 私有化构造方法
+ * - 通过静态方法获取目标实例化对象
+ * - 获取的对象是唯一的
+ */
+public class SingletonPatternExample {
+    
+    //测试
+    public static void main(String[] args){
+        SingletonFive s = SingletonFive.SINGLETON_FIVE;
+    }
+}
+
+/**
+ * 懒汉式
+ * - 在使用者第一次调用静态方法的时候才会实例化对象
+ * - 要考虑线程安全，注意加锁（synchornized）
+ * - 加锁的懒汉式执行效率略低
+ */
+class SingletonOne{
+
+    //私有化的构造方法
+    private SingletonOne(){
+        System.out.println("this is SingletonOne");
+    }
+
+    //唯一实例对象
+    private static SingletonOne singletonOne;
+
+    //实例对象获取方法
+    public static SingletonOne getSingletonOne(){
+        if (singletonOne == null){
+            singletonOne = new SingletonOne();
+        }
+        return singletonOne;
+    }
+
+    //加锁的实例对象获取方法
+    public static synchronized SingletonOne getSingletonOneForSyn(){
+        if (singletonOne == null){
+            singletonOne = new SingletonOne();
+        }
+        return singletonOne;
+    }
+
+}
+
+/**
+ * 双检锁式
+ * - 是懒汉式的一种延伸模式，线程安全且效率高
+ * - 只有在第一次调用静态方法的时候才触发线程安全检验
+ * - 需要jdk1.5及以上的支持
+ */
+class SingletonTwo{
+
+    //私有化的构造方法
+    private SingletonTwo(){
+        System.out.println("this is SingletonTwo");
+    }
+
+    //唯一实例对象
+    private static SingletonTwo singletonTwo;
+
+    //实例对象获取方法
+    public static SingletonTwo getSingletonTwo(){
+        if (singletonTwo == null){
+            synchronized (SingletonTwo.class){
+                singletonTwo = new SingletonTwo();
+            }
+        }
+        return singletonTwo;
+    }
+}
+
+/**
+ * 登记式
+ * - 是懒汉式的一种延伸模式，线程安全且效率高
+ * - 使用静态内部类来包裹实例对象
+ * - 在调用静态内部类的时候才会实例化对象
+ */
+class SingletonThree{
+
+    //私有化的构造方法
+    private SingletonThree(){
+        System.out.println("this is SingletonThree");
+    }
+
+    //静态内部类包裹实例对象
+    private static class SingleStaticInnerClass{
+        private static SingletonThree singletonThree = new SingletonThree();
+    }
+
+    //实例对象获取方法
+    public static SingletonThree getSingletonThree(){
+        return SingleStaticInnerClass.singletonThree;
+    }
+}
+
+/**
+ * 饿汉式
+ * - 在代码初始化的时候实例化对象
+ * - 线程安全，不用加锁
+ */
+class SingletonFour{
+
+    //私有化的构造方法
+    private SingletonFour(){
+        System.out.println("this is SingletonFour");
+    }
+
+    //唯一实例对象
+    private static SingletonFour singletonFour = new SingletonFour();
+
+    //实例对象获取方法
+    public static SingletonFour getSingletonFour(){
+        return singletonFour;
+    }
+}
+
+/**
+ * 枚举式
+ * - 大咖推荐的方式（听说）
+ * - 需要jdk1.5及以上的支持
+ */
+enum SingletonFive{
+
+    //仅一个实例对象
+    SINGLETON_FIVE;
+
+    //构造方法
+    SingletonFive(){
+        System.out.println("this is SingletonFive");
+    }
+}
+```
